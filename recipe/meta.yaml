@@ -19,7 +19,7 @@ requirements:
     - pip
   run:
     - python >=3
-    - pyproj
+    - pyproj >=2
     - pandas
     - geopandas
     - matplotlib-base

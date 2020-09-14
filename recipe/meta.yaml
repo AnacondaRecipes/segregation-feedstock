@@ -30,7 +30,8 @@ requirements:
     - tqdm
     # FIXME: workaround until we rebuild gdal
     - zstd
-
+    - psutil
+    - pyproj
 test:
   imports:
     - segregation

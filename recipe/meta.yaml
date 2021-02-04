@@ -31,7 +31,7 @@ requirements:
     # FIXME: workaround until we rebuild gdal
     - zstd
     - psutil
-    - pyproj
+    - pyproj >=2.6
 test:
   imports:
     - segregation

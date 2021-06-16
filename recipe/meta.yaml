@@ -17,6 +17,8 @@ requirements:
   host:
     - python >=3.6
     - pip
+    - setuptools
+    - wheel
   run:
     - python >=3.6
     - pandas
@@ -37,6 +39,10 @@ requirements:
 test:
   imports:
     - segregation
+  requires:
+    - pip
+  commands:
+    - pip check
 
 about:
   home: https://pysal.org

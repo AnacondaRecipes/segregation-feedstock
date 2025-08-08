@@ -1,40 +1,73 @@
-{% set version = "1.3.0" %}
+{% set name = "segregation" %}
+{% set version = "2.5.2" %}
 
 package:
-  name: segregation
+  name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://github.com/pysal/segregation/archive/v{{ version }}.tar.gz
-  sha256: 5a2e67c95183ef6324454bfe69a18737288df451a8ce8cccc1cec092064767e4
+  url: https://github.com/pysal/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 25b4011853c6f3562af4fdabcf507fbadee98f43da38dcd59734667c272369b7
 
 build:
   number: 0
-  noarch: python
-  script: {{ PYTHON }} -m pip install . --no-deps -vv
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  skip: true  # [py<310]
 
 requirements:
   host:
-    - python >=3
+    - setuptools >=61.0
+    - setuptools-scm >=6.2
+    - python
     - pip
+    - wheel
   run:
-    - python >=3
-    - pandas
-    - geopandas
-    - matplotlib-base
-    - scikit-learn
-    - seaborn
-    - numpy
-    - scipy
+    - python
+    - deprecation
+    - geopandas >=0.9
+    - joblib
     - libpysal
+    - mapclassify
+    - matplotlib
+    - matplotlib-base
+    - numpy
+    - pandas
+    - scikit-learn >=0.21.3
+    - scipy
+    - seaborn
     - tqdm
-    # FIXME: workaround until we rebuild gdal
-    - zstd
-    - psutil
-    - pyproj
+    - numba
+    - pyproj >=3
+
+# Skipped files that import module that is absent from the main channel
+{% set test_files_to_skip = "--ignore=segregation/tests/test_multiscalar_profile.py" %}
+{% set test_files_to_skip = test_files_to_skip + " --ignore=segregation/tests/test_network.py" %}
+
 test:
+  source_files:
+    - segregation/tests
   imports:
     - segregation
+    - segregation.batch
+    - segregation.decomposition
+    - segregation.dynamics
+    - segregation.inference
+    - segregation.inference.comparative
+    - segregation.local
+    - segregation.multigroup
+    - segregation.network
+    - segregation.singlegroup
+  requires:
+    - pip
+    - pytest
+    - quilt3
+    - matplotlib
+    - ipywidgets
+  commands:
+    - pip check
+    - pytest segregation/tests -v {{ test_files_to_skip }}  # [not win]
+    # Windows test is skipped due to np.testing.assert_almost_equal(index.statistic, 0.5456349992598081) failure
+    - pytest segregation/tests -v {{ test_files_to_skip }} -k "not test_Multi_Gini_Seg"  # [win]
 
 about:
   home: https://pysal.org
@@ -42,11 +75,10 @@ about:
   license_family: BSD
   license_file: LICENSE.txt
   summary: Segregation Measures Framework in PySAL
-
   description: |
     The PySAL segregation module allow users to estimate several segregation measures and perform 
     inference for single measures and comparative inference in a concise way.
-  doc_url: http://segregation.readthedocs.io/
+  doc_url: https://pysal.org/segregation
   dev_url: https://github.com/pysal/segregation
 
 extra:

@@ -60,7 +60,7 @@ test:
   requires:
     - pip
     - pytest
-    - quilt3
+    - quilt3 # [py<314]
     - matplotlib
     - ipywidgets
   commands:

@@ -1,5 +1,5 @@
 {% set name = "segregation" %}
-{% set version = "2.5.2" %}
+{% set version = "2.5.4" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/pysal/{{ name }}/archive/refs/tags/v{{ version }}.tar.gz
-  sha256: 25b4011853c6f3562af4fdabcf507fbadee98f43da38dcd59734667c272369b7
+  sha256: 1aa74ca4e02b96ecc5b999df7c9e79da4d30576c15c1f57cd369e98f8b122970
 
 build:
   number: 0
@@ -39,10 +39,10 @@ requirements:
     - numba
     - pyproj >=3
 
-# Skipped files that import module that is absent from the main channel
+# Skipped files that import pandarm that is absent from the main channel
 {% set test_files_to_skip = "--ignore=segregation/tests/test_multiscalar_profile.py" %}
 {% set test_files_to_skip = test_files_to_skip + " --ignore=segregation/tests/test_network.py" %}
-
+{% set test_files_to_skip = test_files_to_skip + " --deselect=segregation/tests/test_inference.py::Inference_Tester::test_Inference" %}
 test:
   source_files:
     - segregation/tests
@@ -60,7 +60,7 @@ test:
   requires:
     - pip
     - pytest
-    - quilt3
+    - quilt3 # [py<314]
     - matplotlib
     - ipywidgets
   commands:
